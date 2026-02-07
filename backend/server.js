@@ -3,6 +3,8 @@ const cors = require("@fastify/cors");
 const socketio = require("socket.io");
 const fs = require("fs");
 const path = require("path");
+const escpos = require('escpos');
+escpos.Network = require('escpos-network');
 
 fastify.register(cors);
 
@@ -16,22 +18,18 @@ const defaultData = {
     { id: 2, name: "Maria", apellidos: "Camarera", phone: "600500400", pin: "2222", role: "Camarero", active: true },
   ],
   orders: [],
-  categories: [
-    { id: "menu", name: "MENÚ DEL DÍA", color: "bg-rose-500", visible: true, available: true, interactive: true, subcategories: [] },
-    { id: "hamburguesas", name: "HAMBURGUESAS", color: "bg-emerald-500", visible: true, available: true, interactive: true, subcategories: [] },
-  ],
-  products: [
-    { id: 1, category: "menu", name: "Medio Menu", internalName: "1/2 Menu", price: 9.5, visible: true, available: true, interactive: true, allergens: ["gluten"], supplements: [] },
-  ],
+  categories: [],
+  products: [],
   printers: [],
-  zones: [{ id: "principal", name: "Principal" }],
-  tables: [{ id: 1, name: "1", x: 100, y: 100, zoneId: "principal", status: "available", type: "square", capacity: 4 }],
-  settings: { restaurant: { name: "El Trinche", phone: "600752593" } }
+  zones: [],
+  tables: [],
+  settings: {
+    restaurant: { name: "El Trinche", phone: "600752593" }
+  }
 };
 
 let db = { ...defaultData };
 
-// --- Persistence ---
 function loadDB() {
     if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -95,24 +93,22 @@ fastify.delete("/api/staff/:id", async (request) => {
   return { success: true };
 });
 
-// Printer API
+// Printers API
 fastify.get("/api/printers", async () => db.printers || []);
-
 fastify.post("/api/printers", async (request) => {
-  const newPrinter = { id: Date.now(), ...request.body };
-  if (!db.printers) db.printers = [];
-  db.printers.push(newPrinter);
-  saveDB();
-  broadcastInitialData();
-  return newPrinter;
+    const newPrinter = { id: Date.now(), ...request.body };
+    if (!db.printers) db.printers = [];
+    db.printers.push(newPrinter);
+    saveDB();
+    broadcastInitialData();
+    return newPrinter;
 });
-
 fastify.delete("/api/printers/:id", async (request) => {
-  const { id } = request.params;
-  db.printers = db.printers.filter(p => p.id != id);
-  saveDB();
-  broadcastInitialData();
-  return { success: true };
+    const { id } = request.params;
+    db.printers = db.printers.filter(p => p.id != id);
+    saveDB();
+    broadcastInitialData();
+    return { success: true };
 });
 
 // Other APIs
@@ -123,10 +119,44 @@ fastify.get("/api/tables", async () => db.tables);
 fastify.get("/api/zones", async () => db.zones);
 fastify.get("/api/settings", async () => db.settings);
 
-// Test Print
-fastify.post("/api/print", async (request) => {
-    console.log("Simulating print to:", request.body.printerIp);
-    return { success: true };
+// Real Print Implementation
+fastify.post("/api/print", async (request, reply) => {
+    const { printerIp, content } = request.body;
+    console.log("Attempting to print to:", printerIp);
+    
+    if (!printerIp) {
+        return reply.status(400).send({ success: false, error: "Printer IP is required" });
+    }
+
+    return new Promise((resolve) => {
+        try {
+            const device = new escpos.Network(printerIp);
+            const printer = new escpos.Printer(device);
+
+            device.open((error) => {
+                if (error) {
+                    console.error("Printer connection error:", error);
+                    resolve({ success: false, error: "No se pudo conectar con la impresora: " + error.message });
+                    return;
+                }
+                
+                printer
+                    .font('a')
+                    .align('ct')
+                    .size(1, 1)
+                    .text(content)
+                    .feed(3)
+                    .cut()
+                    .close(() => {
+                        console.log("Print job completed successfully");
+                        resolve({ success: true });
+                    });
+            });
+        } catch (err) {
+            console.error("Print logic error:", err);
+            resolve({ success: false, error: err.message });
+        }
+    });
 });
 
 const start = async () => {

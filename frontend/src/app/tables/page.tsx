@@ -23,24 +23,46 @@ import Header from "../../components/Header";
 
 async function printReceipt(cart: any[], total: number) {
     try {
-        const content = cart.map(item => `${item.quantity}x ${item.name} - ${(item.price * item.quantity).toFixed(2)}€`).join("\n");
-        const fullContent = `MESA rápida\n----------------\n${content}\n----------------\nTOTAL: ${total.toFixed(2)}€`;
+        let printerIp = '192.168.1.100'; 
+        try {
+            const printersRes = await fetch('/eltrinche/api/printers');
+            const printers = await printersRes.json();
+            if (printers && printers.length > 0) {
+                printerIp = printers[0].ip;
+            }
+        } catch (e) {
+            console.warn('No se pudo obtener la configuración de la impresora, usando IP por defecto');
+        }
+
+        const date = new Date().toLocaleString();
+        const itemsText = cart.map(item => `${item.quantity}x ${item.name} - ${(item.price * item.quantity).toFixed(2)}€`).join('\n');
+        const fullContent = `
+=== EL TRINCHE ===
+Fecha: ${date}
+------------------
+${itemsText}
+------------------
+TOTAL: ${total.toFixed(2)}€
+Grs. por su visita
+==================
+`;
 
         const res = await fetch('/eltrinche/api/print', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                printerIp: '192.168.1.100', // Default mock IP
+                printerIp: printerIp,
                 content: fullContent
             })
         });
         return res.ok;
     } catch (err) {
         console.error(err);
-        alert("Error enviando a la impresora. ¿Está encendida?");
+        alert('Error enviando a la impresora. ¿Está encendida?');
         return false;
     }
 }
+
 
 export default function TablesPage() {
     const [tableName, setTableName] = useState("Cuenta rápida");
