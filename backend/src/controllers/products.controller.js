@@ -13,6 +13,18 @@ exports.createProduct = async (req, reply) => {
     return newProd;
 };
 
+exports.updateProduct = async (req, reply) => {
+    const db = getDb();
+    const { id } = req.params;
+    const index = db.products.findIndex(p => p.id == id);
+
+    if (index === -1) return reply.status(404).send({ error: "Produto não encontrado" });
+
+    db.products[index] = { ...db.products[index], ...req.body };
+    updateDb(db);
+    return db.products[index];
+};
+
 // Categories
 exports.getCategories = async (req, reply) => {
     return getDb().categories || [];
