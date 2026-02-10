@@ -17,7 +17,14 @@ import {
     ImageIcon,
     Check,
     ClipboardList,
-    Trash2
+    Trash2,
+    Building2,
+    Edit2,
+    Clock,
+    Globe,
+    CreditCard,
+    Bell,
+    ShieldCheck
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
