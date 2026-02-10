@@ -1,0 +1,44 @@
+version: "2.4"
+
+networks:
+  qpos-net:
+    driver: bridge
+
+services:
+  backend:
+    container_name: qpos-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - PORT=4000
+    volumes:
+      - ./backend/data:/app/data
+    networks:
+      - qpos-net
+    restart: always
+    mem_limit: 512m
+
+  frontend:
+    container_name: qpos-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - qpos-net
+    restart: always
+    mem_limit: 512m
+
+  nginx:
+    container_name: qpos-nginx
+    image: nginx:alpine
+    ports:
+      - "8888:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - qpos-net
+    depends_on:
+      - frontend
+      - backend
+    restart: always
