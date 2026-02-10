@@ -14,17 +14,12 @@ import {
     Plus,
     Save,
     X,
-    Trash2,
-    Edit2,
-    Clock,
-    Globe,
-    Building2,
-    CreditCard,
-    Bell,
-    ShieldCheck,
-    Image as ImageIcon,
-    Check
+    ImageIcon,
+    Check,
+    ClipboardList,
+    Trash2
 } from 'lucide-react';
+import { clsx } from 'clsx';
 import { io } from 'socket.io-client';
 
 const ALLERGENS = [
