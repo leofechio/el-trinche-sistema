@@ -711,37 +711,7 @@ function ArqueosView({ data }: any) {
     );
 }
 
-function CategoriesView({ categories, onSave, onDelete }: any) {
-    return (
-        <div className="bg-white p-10 rounded-[48px] shadow-xl shadow-gray-200/50">
-            <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xl font-black text-gray-900 flex items-center gap-3"><ClipboardList className="text-emerald-500" /> Categorías</h3>
-                <button 
-                    onClick={() => {
-                        const name = prompt('Nombre de la categoría:');
-                        if (name) onSave({ name, color: 'bg-emerald-600' });
-                    }}
-                    className="bg-[#1A1A1A] text-white px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 hover:shadow-xl transition-all"
-                >
-                    <Plus size={18} /> Nueva Categoría
-                </button>
-            </div>
-            <div className="grid grid-cols-2 gap-6">
-                {categories.map((c: any) => (
-                    <div key={c.id} className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl group hover:bg-white hover:shadow-lg transition-all border-2 border-transparent">
-                        <div className="flex items-center gap-4">
-                            <div className="w-3 h-12 rounded-full bg-emerald-500" />
-                            <h4 className="font-black text-gray-800">{c.name}</h4>
-                        </div>
-                        <button onClick={(e) => { e.stopPropagation(); if(confirm('Excluir?')) onDelete(c.id); }} className="p-3 bg-white text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all shadow-sm">
-                            <Trash2 size={18} />
-                        </button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
+
 
 function CategoriesView({ categories, onSave, onDelete }: any) {
     if (!categories) return <div className="p-10 text-center text-gray-400 font-bold">Cargando categorías...</div>;
@@ -752,7 +722,7 @@ function CategoriesView({ categories, onSave, onDelete }: any) {
                     <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl"><ClipboardList size={24} /></div>
                     Categorías
                 </h3>
-                <button 
+                <button
                     onClick={() => {
                         const name = prompt('Nombre de la categoría:');
                         if (name) onSave({ name, color: 'bg-emerald-600' });
@@ -776,8 +746,8 @@ function CategoriesView({ categories, onSave, onDelete }: any) {
                                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mt-1">ID: {c.id}</p>
                             </div>
                         </div>
-                        <button 
-                            onClick={(e) => { e.stopPropagation(); if(confirm('¿Desea eliminar esta categoría?')) onDelete(c.id); }} 
+                        <button
+                            onClick={(e) => { e.stopPropagation(); if (confirm('¿Desea eliminar esta categoría?')) onDelete(c.id); }}
                             className="p-4 bg-white text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100"
                         >
                             <Trash2 size={20} />
