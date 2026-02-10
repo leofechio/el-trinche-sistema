@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
-import Header from "../../components/Header";
+import Header from "@/components/Header";
 import { CATEGORIES, PRODUCTS } from "../constants";
 
 export default function TablesPage() {

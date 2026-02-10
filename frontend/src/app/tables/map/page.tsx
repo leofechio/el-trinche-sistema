@@ -13,7 +13,7 @@ import {
     AlertCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "../../components/Header";
+import Header from "@/components/Header";
 
 export default function TablesMapPage() {
     const [zones, setZones] = useState<any[]>([]);

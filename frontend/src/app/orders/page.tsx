@@ -16,7 +16,7 @@ import {
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 import { io } from "socket.io-client";
-import Header from "../../components/Header";
+import Header from "@/components/Header";
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState<any[]>([]);
