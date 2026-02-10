@@ -9,15 +9,15 @@ escpos.Network = require('escpos-network');
 
 fastify.register(cors);
 
-// Serve Frontend Static Files
-const frontendPath = path.join(__dirname, "qpos-clone-docker/frontend/out");
-if (fs.existsSync(frontendPath)) {
-    fastify.register(fastifyStatic, {
-        root: frontendPath,
-        prefix: "/eltrinche/",
-        decorateReply: false // To avoid conflict if registered multiple times
-    });
-}
+// Serve Product Photos
+const UPLOADS_DIR = path.join(__dirname, "data/uploads");
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+fastify.register(fastifyStatic, {
+    root: UPLOADS_DIR,
+    prefix: "/eltrinche/uploads/",
+    decorateReply: false
+});
 
 const DATA_DIR = path.join(__dirname, "data");
 const DATA_FILE = path.join(DATA_DIR, "db.json");
@@ -237,20 +237,17 @@ fastify.post("/eltrinche/api/print", async (request, reply) => {
 fastify.get("/eltrinche/api/tables", async () => db.tables);
 fastify.get("/eltrinche/api/zones", async () => db.zones);
 
-// Fallback to index.html for SPA routing
+// Fallback to 404 for API, everything else is handled by frontend proxy usually
 fastify.setNotFoundHandler((request, reply) => {
     if (request.url.startsWith("/eltrinche/api/")) {
         return reply.status(404).send({ error: "API route not found" });
-    }
-    if (fs.existsSync(path.join(frontendPath, "index.html"))) {
-        return reply.sendFile("index.html");
     }
     return reply.status(404).send("Not found");
 });
 
 const start = async () => {
     try {
-        const port = 8888;
+        const port = process.env.PORT || 4000;
         await fastify.listen({ port, host: "0.0.0.0" });
         io = socketio(fastify.server, { path: "/eltrinche/socket.io", cors: { origin: "*" } });
         io.on("connection", (socket) => { socket.emit("initial_data", db); });
