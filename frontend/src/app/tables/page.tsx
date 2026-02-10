@@ -411,8 +411,21 @@ Grs. por su visita
                                     onClick={(e) => addToCart(p, e)}
                                     className="bg-white p-6 rounded-[32px] shadow-xl shadow-gray-200/40 cursor-pointer border-2 border-transparent hover:border-emerald-500 transition-all group relative overflow-hidden"
                                 >
-                                    <div className="aspect-square bg-gray-50 rounded-2xl mb-4 flex items-center justify-center text-gray-200 group-hover:bg-emerald-50 group-hover:text-emerald-200 transition-all">
-                                        <Utensils size={48} />
+                                    <div className="aspect-square bg-gray-50 rounded-2xl mb-4 flex items-center justify-center text-gray-200 group-hover:bg-emerald-50 group-hover:text-emerald-200 transition-all overflow-hidden relative">
+                                        {p.image ? (
+                                            <img
+                                                src={p.image.startsWith('http') ? p.image : `/eltrinche/uploads/${p.image}`}
+                                                alt={p.name}
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                    ((e.target as HTMLImageElement).nextElementSibling as HTMLElement).style.display = 'flex';
+                                                }}
+                                            />
+                                        ) : null}
+                                        <div className={clsx("absolute inset-0 flex items-center justify-center", p.image ? "hidden" : "")}>
+                                            <Utensils size={48} />
+                                        </div>
                                     </div>
                                     <h4 className="font-black text-gray-800 text-sm mb-1 line-clamp-2 h-10 group-hover:text-emerald-700">{p.name}</h4>
                                     <div className="flex items-center justify-between mt-4">
