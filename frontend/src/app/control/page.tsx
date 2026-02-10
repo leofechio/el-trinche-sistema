@@ -19,7 +19,6 @@ import {
     ClipboardList,
     Trash2
 } from 'lucide-react';
-import { clsx } from 'clsx';
 import { io } from 'socket.io-client';
 
 const ALLERGENS = [
@@ -735,7 +734,7 @@ function CategoriesView({ categories, onSave, onDelete }: any) {
                 ) : categories.map((c: any) => (
                     <div key={c.id} className="flex items-center justify-between p-6 bg-gray-50 rounded-[32px] group hover:bg-white hover:shadow-xl transition-all border-2 border-transparent hover:border-emerald-100">
                         <div className="flex items-center gap-4">
-                            <div className={clsx("w-3 h-12 rounded-full", c.color || "bg-emerald-500")} />
+                            <div className={`w-3 h-12 rounded-full ${c.color || "bg-emerald-500"}`} />
                             <div>
                                 <h4 className="font-black text-gray-800">{c.name}</h4>
                                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mt-1">ID: {c.id}</p>
