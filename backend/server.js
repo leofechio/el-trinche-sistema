@@ -13,6 +13,30 @@ fastify.register(cors);
 const UPLOADS_DIR = path.join(__dirname, "data/uploads");
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
+fastify.register(require('@fastify/multipart'), {
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
+});
+
+fastify.post("/eltrinche/api/upload", async (req, reply) => {
+    const data = await req.file();
+    if (!data) return reply.status(400).send({ error: "No file uploaded" });
+
+    const filename = `${Date.now()}_${data.filename}`;
+    const filepath = path.join(UPLOADS_DIR, filename);
+
+    await new Promise((resolve, reject) => {
+        const pump = require('stream').pipeline;
+        pump(data.file, fs.createWriteStream(filepath), err => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+
+    return { success: true, url: `/eltrinche/uploads/${filename}` };
+});
+
 fastify.register(fastifyStatic, {
     root: UPLOADS_DIR,
     prefix: "/eltrinche/uploads/",
