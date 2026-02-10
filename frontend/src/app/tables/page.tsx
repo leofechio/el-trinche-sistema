@@ -129,7 +129,11 @@ export default function TablesPage() {
 
     const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-    const addToCart = (product: any) => {
+    const addToCart = (product: any, e?: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         setCart((prev) => {
             const existing = prev.find(item => item.id === product.id);
             if (existing) {
@@ -154,7 +158,7 @@ export default function TablesPage() {
     };
 
     const handleTableClick = (tableNumber: string) => {
-        window.location.href = `/eltrinche/tables?table=${tableNumber}`;
+        router.push(`/eltrinche/tables?table=${tableNumber}`);
     };
 
     const handleCheckout = (e: any) => {
@@ -200,7 +204,7 @@ export default function TablesPage() {
                     setOrderSuccess(false);
                     setShowPaymentModal(false);
                     setCart([]);
-                    window.location.href = '/eltrinche/tables/map';
+                    router.push('/eltrinche/tables/map');
                 }, 2000);
             } else {
                 alert("Erro ao processar pagamento no servidor.");
@@ -404,7 +408,7 @@ Grs. por su visita
                                     layout
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    onClick={() => addToCart(p)}
+                                    onClick={(e) => addToCart(p, e)}
                                     className="bg-white p-6 rounded-[32px] shadow-xl shadow-gray-200/40 cursor-pointer border-2 border-transparent hover:border-emerald-500 transition-all group relative overflow-hidden"
                                 >
                                     <div className="aspect-square bg-gray-50 rounded-2xl mb-4 flex items-center justify-center text-gray-200 group-hover:bg-emerald-50 group-hover:text-emerald-200 transition-all">
