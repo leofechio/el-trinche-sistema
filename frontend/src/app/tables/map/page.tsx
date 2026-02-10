@@ -64,7 +64,7 @@ export default function TablesMapPage() {
     };
 
     const handleTableClick = (tableNumber: string) => {
-        router.push(`/eltrinche/tables?table=${tableNumber}`);
+        router.push(`/tables?table=${tableNumber}`);
     };
 
     if (loading) {

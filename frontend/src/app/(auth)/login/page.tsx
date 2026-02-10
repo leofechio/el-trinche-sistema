@@ -30,7 +30,7 @@ export default function LoginPage() {
                 localStorage.setItem("eltrinche_user", JSON.stringify(data.user));
 
                 // Redirect to tables page
-                router.push("/eltrinche/tables/map");
+                router.push("/tables/map");
             } else {
                 setError(data.error || "Erro ao fazer login");
             }

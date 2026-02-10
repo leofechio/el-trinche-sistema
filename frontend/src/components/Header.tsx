@@ -24,7 +24,7 @@ export default function Header({ showControl, activeTab, showVolver, onVolver }:
 
     const handleLogout = () => {
         localStorage.removeItem('eltrinche_user');
-        router.push('/eltrinche/login');
+        router.push('/login');
     };
 
     return (
@@ -32,7 +32,7 @@ export default function Header({ showControl, activeTab, showVolver, onVolver }:
             <div className="flex items-center gap-8">
                 <div
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() => router.push('/eltrinche/tables/map')}
+                    onClick={() => router.push('/tables/map')}
                 >
                     <div className="bg-emerald-600 p-2 rounded-xl">
                         <Utensils className="text-white" size={24} />
@@ -56,19 +56,19 @@ export default function Header({ showControl, activeTab, showVolver, onVolver }:
                         icon={<Utensils size={20} />}
                         label="Mesas"
                         active={activeTab === 'mesas'}
-                        onClick={() => router.push('/eltrinche/tables/map')}
+                        onClick={() => router.push('/tables/map')}
                     />
                     <HeaderNavItem
                         icon={<LayoutDashboard size={20} />}
                         label="Painel"
                         active={activeTab === 'control'}
-                        onClick={() => router.push('/eltrinche/control')}
+                        onClick={() => router.push('/control')}
                     />
                     <HeaderNavItem
                         icon={<Settings size={20} />}
                         label="Config"
                         active={activeTab === 'admin'}
-                        onClick={() => router.push('/eltrinche/admin')}
+                        onClick={() => router.push('/admin')}
                     />
                 </nav>
             </div>

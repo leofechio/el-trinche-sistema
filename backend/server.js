@@ -60,7 +60,9 @@ function loadDB() {
     try {
         if (fs.existsSync(DATA_FILE)) {
             const data = fs.readFileSync(DATA_FILE, "utf-8");
-            db = JSON.parse(data);
+            const loaded = JSON.parse(data);
+            // Merge with default to ensure keys exist
+            db = { ...db, ...loaded };
         } else {
             saveDB();
         }

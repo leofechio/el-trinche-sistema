@@ -204,7 +204,7 @@ export default function TablesPage() {
                     setOrderSuccess(false);
                     setShowPaymentModal(false);
                     setCart([]);
-                    router.push('/eltrinche/tables/map');
+                    router.push('/tables/map');
                 }, 2000);
             } else {
                 alert("Erro ao processar pagamento no servidor.");
@@ -342,7 +342,7 @@ Grs. por su visita
             <Header
                 activeTab="mesas"
                 showVolver={true}
-                onVolver={() => router.push('/eltrinche/tables/map')}
+                onVolver={() => router.push('/tables/map')}
             />
 
             <main className="flex-1 flex overflow-hidden">
